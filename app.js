@@ -5,16 +5,30 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
+// session Redis的中间件
+const session = require('koa-generic-session')
+const Redis = require('koa-redis')
 const pv = require('./middleware/koa-pv')
 const m1 = require('./middleware/m1')
 const m2 = require('./middleware/m2')
 const m3 = require('./middleware/m3')
+
+const mongoose = require('mongoose')
+const dbConfig = require('./dbs/config')
 const index = require('./routes/index')
 const users = require('./routes/users')
 
 // error handler
 onerror(app)
-
+// session 做加密处理
+app.keys = ['keys','keyskeys']
+// session连接上redis，用redis存储session,当然redis也可以单独处理数据
+app.use(session({
+    //cookie前缀
+    key:'bhj',
+    prefix:'bhjpr',
+    store:new Redis()
+}))
 // middlewares
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
@@ -43,6 +57,9 @@ app.use(async (ctx, next) => {
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
 
+mongoose.connect(dbConfig.dbs,{
+  useNewUrlParser:true
+})
 // error-handling
 app.on('error', (err, ctx) => {
   console.error('server error', err, ctx)

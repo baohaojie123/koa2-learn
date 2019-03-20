@@ -27,12 +27,12 @@ router.get('/testAsync',async (ctx) =>{
   // const a = await A;
   // const b = await B;
   // const c = await C;
-  global.console.log('start',new Date().getTime())
+  global.console.log('start',new Date().getTime())//1
   // 异步结束之后返回的结果 a的结果就是resolve()返回的结果
   const a = await new Promise((resolve,reject) => {
     setTimeout(function () {
       resolve('a')
-      global.console.log('async a',new Date().getTime())
+      global.console.log('async a',new Date().getTime())//2 1s后执行
     },1000)
   })
   const b = await 123
@@ -40,7 +40,7 @@ router.get('/testAsync',async (ctx) =>{
   const c = await new Promise((resolve,reject) => {
     setTimeout(function () {
       resolve('abc')
-      global.console.log('async c',new Date().getTime())
+      global.console.log('async c',new Date().getTime())//3  2执行完2s后执行
     },2000)
   })
   ctx.body = {
@@ -48,6 +48,11 @@ router.get('/testAsync',async (ctx) =>{
     b,
     c
   }
+    // {
+    //     "a": "a",
+    //     "b": 123,
+    //     "c": "abc"
+    // }
 
 })
 

@@ -2,6 +2,7 @@
 // 只要到达服务器的请求 都会执行中间件
 // 当前中间件处理完毕 请交给下一个中间件处理
 function pv(ctx) {
+  ctx.session.count++
   global.console.log('pv',ctx.path)
 }
 module.exports = function () {
